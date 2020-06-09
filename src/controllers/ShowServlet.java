@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -14,18 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import models.Tasklist;
 import utils.DButil;
 
-
 /**
- * Servlet implementation class IndexServlet
+ * Servlet implementation class ShowServlet
  */
-@WebServlet(name = "index", urlPatterns = { "/index" })
-public class IndexServlet extends HttpServlet {
+@WebServlet(name = "show", urlPatterns = { "/show" })
+public class ShowServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IndexServlet() {
+    public ShowServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,15 +34,14 @@ public class IndexServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DButil.createEntityManager();
 
-        List<Tasklist> tasklists = em.createNamedQuery("getAllTasks", Tasklist.class)
-                                   .getResultList();
+        Tasklist t = em.find(Tasklist.class, Integer.parseInt(request.getParameter("id")));
 
         em.close();
 
-        request.setAttribute("tasklists",tasklists);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasklist/index.jsp");
-        rd.forward(request,response);
+        request.setAttribute("tasklist", t);
+
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasklist/show.jsp");
+        rd.forward(request, response);
     }
-
 }
